@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>올댓스파인 스마트 업무관리 시스템 — 핵심 장점</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@latest/dist/web/static/pretendard.css" />
+<style>
+  :root{
+    --navy:#172554; --navy2:#1E3A8A; --blue:#1D4ED8; --blue2:#2563EB;
+    --orange:#F59E0B; --orange2:#F97316;
+    --ink:#0F172A; --gray:#64748B; --line:#E2E8F0; --soft:#F1F5F9; --softer:#F8FAFC;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#0b1220;font-family:"Pretendard Variable",Pretendard,system-ui,sans-serif;color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .deck{display:flex;flex-direction:column;align-items:center;gap:26px;padding:26px 14px}
+  .slide{position:relative;width:min(1100px,96vw);aspect-ratio:16/9;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45)}
+  /* 공통 헤더/푸터 (본문 슬라이드) */
+  .crumb{position:absolute;top:30px;left:44px;font-size:13px;color:var(--gray);font-weight:600;letter-spacing:.2px}
+  .crumb b{color:var(--blue)}
+  .pageno{position:absolute;top:28px;right:44px;font-size:13px;color:var(--gray);font-weight:700}
+  .foot{position:absolute;left:44px;bottom:24px;font-size:11px;color:#94A3B8;letter-spacing:.3px}
+  .foot.dark{color:#9FB3E8}
+  .ttl{position:absolute;top:62px;left:44px;font-size:34px;font-weight:800;color:var(--ink);letter-spacing:-.5px}
+  .ttl .bar{display:inline-block;width:7px;height:30px;background:var(--orange);border-radius:3px;margin-right:14px;vertical-align:-4px}
+  .body{position:absolute;left:44px;right:44px;top:128px;bottom:54px}
+  /* 네트워크 모티프 (SVG) */
+  .mesh{position:absolute;inset:0;opacity:.5;pointer-events:none}
+  .mesh.right{left:58%}
+  /* 표지 */
+  .cover{background:linear-gradient(120deg,#fff 0%,#fff 55%,#EAF2FB 100%)}
+  .cover .brand{position:absolute;top:40px;left:48px;font-size:15px;font-weight:800;color:var(--blue)}
+  .cover .brand span{color:var(--gray);font-weight:600}
+  .cover .kicker{position:absolute;top:170px;left:48px;font-size:15px;font-weight:700;color:var(--orange);letter-spacing:.5px}
+  .cover h1{position:absolute;top:200px;left:48px;right:46%;font-size:46px;font-weight:900;line-height:1.18;color:var(--navy);letter-spacing:-1px}
+  .cover .en{position:absolute;top:430px;left:48px;right:46%;font-size:15px;font-weight:600;color:var(--blue2);line-height:1.5}
+  .cover .meta{position:absolute;left:48px;bottom:42px;font-size:13px;color:var(--gray);font-weight:600}
+  .cover .wms{position:absolute;left:48px;bottom:42px;transform:translateX(190px);background:rgba(29,78,216,.1);color:var(--blue);font-weight:800;font-size:11px;letter-spacing:2px;padding:3px 9px;border-radius:5px}
+  /* 섹션 구분 */
+  .divider{background:radial-gradient(1200px 500px at 80% 10%,#27409e 0%,var(--navy2) 40%,var(--navy) 100%)}
+  .divider .num{position:absolute;top:18px;right:40px;font-size:230px;font-weight:900;color:rgba(255,255,255,.07);line-height:1}
+  .divider .en{position:absolute;left:48px;top:150px;font-size:20px;font-weight:800;color:var(--orange);letter-spacing:.5px}
+  .divider .en .bar{display:inline-block;width:6px;height:20px;background:var(--orange);border-radius:3px;margin-right:12px;vertical-align:-3px}
+  .divider h2{position:absolute;left:48px;top:182px;font-size:52px;font-weight:900;color:#fff;letter-spacing:-1px}
+  .divider .sub{position:absolute;left:48px;right:48px;bottom:60px;color:#BFD2F5;font-size:15px;font-weight:500;line-height:1.6}
+  .divider .rule{position:absolute;left:48px;right:48px;height:1px;background:rgba(255,255,255,.16)}
+  .divider .rule.t{top:44px}.divider .rule.b{bottom:44px}
+  /* 콘텐츠 컴포넌트 */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;height:100%}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .grid4{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .card{background:var(--softer);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+  .card .h{font-size:16px;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:9px;margin-bottom:7px}
+  .card .h .dot{width:9px;height:9px;border-radius:50%;background:var(--blue);flex:0 0 auto}
+  .card p{font-size:13.5px;color:#475569;line-height:1.55}
+  .big{font-size:46px;font-weight:900;color:var(--blue);line-height:1;letter-spacing:-1px}
+  .big .u{font-size:18px;font-weight:800;color:var(--gray);margin-left:4px}
+  .pill{display:inline-block;background:rgba(245,158,11,.14);color:#B45309;font-weight:800;font-size:12px;padding:3px 10px;border-radius:20px}
+  .kv{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px dashed var(--line)}
+  .kv:last-child{border-bottom:0}
+  .kv .m{flex:0 0 168px;font-weight:800;color:var(--navy);font-size:15px}
+  .kv .m em{display:block;font-style:normal;font-size:11px;font-weight:700;color:var(--orange);letter-spacing:.3px}
+  .kv .d{font-size:14px;color:#475569;line-height:1.5}
+  .lead{font-size:19px;color:#334155;line-height:1.7;font-weight:500}
+  .lead b{color:var(--blue);font-weight:800}
+  .quote{font-size:30px;font-weight:900;color:var(--navy);letter-spacing:-.5px;line-height:1.35}
+  .quote .o{color:var(--orange)}
+  .hint{position:fixed;right:14px;bottom:12px;color:#64748B;font-size:12px;background:#111a2e;padding:6px 11px;border-radius:8px}
+  @media print{
+    html,body{background:#fff}
+    .deck{gap:0;padding:0}
+    .slide{width:100%;border-radius:0;box-shadow:none;page-break-after:always;break-after:page}
+    .hint{display:none}
+    @page{size:1100px 619px;margin:0}
+  }
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 1. 표지 -->
+  <section class="slide cover">
+    <svg class="mesh right" viewBox="0 0 460 619"><g stroke="#9FC6E0" stroke-width="1" fill="none" opacity=".7">
+      <path d="M120 40 L260 90 L360 60 M260 90 L300 200 L210 260 M300 200 L420 230 M210 260 L150 360 L260 410 M260 410 L380 380 M150 360 L80 470 L200 520 M200 520 L330 560"/>
+    </g><g fill="#4FA8C4"><circle cx="260" cy="90" r="5"/><circle cx="300" cy="200" r="6"/><circle cx="210" cy="260" r="4"/><circle cx="150" cy="360" r="5"/><circle cx="260" cy="410" r="6"/><circle cx="200" cy="520" r="5"/><circle cx="420" cy="230" r="4"/><circle cx="380" cy="380" r="4"/></g></svg>
+    <div class="brand">◢ illustAllThatSpine <span>주식회사 올댓스파인</span></div>
+    <div class="kicker">SMART WORK MANAGEMENT SYSTEM</div>
+    <h1>올댓스파인<br>스마트 업무관리 시스템</h1>
+    <div class="en">AllThatSpine Smart Work Management System (SWMS)<br>원격 직원 통제 · 프로젝트/예산 모니터링 통합 플랫폼</div>
+    <div class="meta">2026 · v1.0</div><div class="wms">WMS</div>
+  </section>
+
+  <!-- 2. 핵심 메시지 -->
+  <section class="slide">
+    <div class="crumb">Overview · <b>핵심 가치</b></div><div class="pageno">2 / 10</div>
+    <div class="ttl"><span class="bar"></span>한 문장으로</div>
+    <div class="body" style="display:flex;flex-direction:column;justify-content:center;gap:26px">
+      <div class="quote">대표가 원격에서도 <span class="o">회사가 어떻게 돌아가는지</span><br>한 화면에서 보고 통제하는 도구.</div>
+      <div class="lead">무거운 ERP가 아니라 <b>가벼운 모니터링·통제 도구</b>입니다.<br>설계 원칙 — <b>“입력은 최소로, 보는 것은 충실하게.”</b></div>
+      <div style="display:flex;gap:10px"><span class="pill">원격 통제</span><span class="pill">실시간 모니터링</span><span class="pill">역할별 맞춤</span><span class="pill">라이트 · 빠른 도입</span></div>
+    </div>
+    <div class="foot">© 2026 주식회사 올댓스파인 · SWMS</div>
+  </section>
+
+  <!-- 3. 섹션: 문제 -->
+  <section class="slide divider">
+    <div class="rule t"></div><div class="rule b"></div>
+    <div class="num">01</div>
+    <div class="en"><span class="bar"></span>Why &middot; Problem</div>
+    <h2>왜 필요한가</h2>
+    <div class="sub">직원 출근이 불규칙하고 대표가 원격이라 — 누가 일하는지, 무엇을 했는지, 목표대로 가는지, 돈은 어떤지 한눈에 보이지 않는다.</div>
+    <div class="foot dark">© 2026 주식회사 올댓스파인 · SWMS</div>
+  </section>
+
+  <!-- 4. 문제 상세 -->
+  <section class="slide">
+    <div class="crumb"><b>Why</b> · 원격 관리의 어려움</div><div class="pageno">4 / 10</div>
+    <div class="ttl"><span class="bar"></span>원격 관리의 4가지 공백</div>
+    <div class="body"><div class="grid4">
+      <div class="card"><div class="h"><span class="dot"></span>근무</div><p>출근이 불규칙하고 원격이라 <b>누가 언제 일하는지</b> 체계적 관리가 어렵다. 원격 데스크톱 우회 출근도 막기 힘들다.</p></div>
+      <div class="card"><div class="h"><span class="dot"></span>업무</div><p>관리자 부재로 직원이 <b>무엇을 했는지</b> 점검이 어렵고, 목표 대비 이행이 보이지 않는다.</p></div>
+      <div class="card"><div class="h"><span class="dot"></span>프로젝트</div><p>프로젝트 <b>추진 현황</b>이 흩어져 있어 진행·지연·위험을 한눈에 파악하기 어렵다.</p></div>
+      <div class="card"><div class="h"><span class="dot"></span>예산</div><p>자금·매출이 <b>체계적으로 추적</b>되지 않아 잔액·매출 목표 달성이 보이지 않는다.</p></div>
+    </div></div>
+    <div class="foot">© 2026 주식회사 올댓스파인 · SWMS</div>
+  </section>
+
+  <!-- 5. 섹션: 솔루션 -->
+  <section class="slide divider">
+    <div class="rule t"></div><div class="rule b"></div>
+    <div class="num">02</div>
+    <div class="en"><span class="bar"></span>Solution &middot; 기능 × 목적</div>
+    <h2>무엇을 해결하는가</h2>
+    <div class="sub">10개 모듈이 각각 명확한 목적을 달성한다. 한 번 입력하면 여러 화면에 반영 — 보고 태그 하나로 프로젝트·목표·통계가 동시에 갱신.</div>
+    <div class="foot dark">© 2026 주식회사 올댓스파인 · SWMS</div>
+  </section>
+
+  <!-- 6. 기능 × 목적 (1) -->
+  <section class="slide">
+    <div class="crumb"><b>Solution</b> · 기능별 달성 목적 (1/2)</div><div class="pageno">6 / 10</div>
+    <div class="ttl"><span class="bar"></span>기능이 달성하는 목적 ①</div>
+    <div class="body">
+      <div class="kv"><div class="m">근태관리<em>ATTENDANCE</em></div><div class="d"><b>“누가 언제 일하는가”를 통제.</b> 회사 IP + 사무실 QR <b>이중 위치 인증</b>으로 원격 우회 차단, 지각·결근 자동 판정, 일별·월별·연간 통계, 실시간 출근 현황판.</div></div>
+      <div class="kv"><div class="m">업무보고 · 나의 업무<em>REPORT · MISSION</em></div><div class="d"><b>“무엇을 했고 목표대로 가는가”를 점검.</b> 강제 항목 템플릿으로 일/주/월 보고, 측정 가능한 목표·진행률 추적, 보고-목표 자동 연계.</div></div>
+      <div class="kv"><div class="m">프로젝트<em>PROJECT</em></div><div class="d"><b>“추진 현황을 한눈에.”</b> 블로그형 개요·세부업무·마일스톤, <b>신호등(정상/지연/위험)</b>으로 상태를 즉시 파악.</div></div>
+      <div class="kv"><div class="m">예산<em>BUDGET</em></div><div class="d"><b>“자금·매출을 실시간 모니터링.”</b> 통장 입출금·잔액·법인카드, <b>매출 목표 달성률·항목별 비중·월별 추이 그래프</b>. 회계·대표만 접근.</div></div>
+    </div>
+    <div class="foot">© 2026 주식회사 올댓스파인 · SWMS</div>
+  </section>
+
+  <!-- 7. 기능 × 목적 (2) -->
+  <section class="slide">
+    <div class="crumb"><b>Solution</b> · 기능별 달성 목적 (2/2)</div><div class="pageno">7 / 10</div>
+    <div class="ttl"><span class="bar"></span>기능이 달성하는 목적 ②</div>
+    <div class="body">
+      <div class="kv"><div class="m">전자결재<em>APPROVAL</em></div><div class="d"><b>“어디서든 빠른 승인.”</b> 휴가·지출·구매·기안 신청→승인, <b>정식 A4 결재문서(직인·서명)</b> 출력, 휴가 승인 시 근태·캘린더 자동 반영.</div></div>
+      <div class="kv"><div class="m">게시판 · 자료 · 캘린더<em>COLLABORATION</em></div><div class="d"><b>“소통·자료·일정을 한곳에.”</b> 로그인 팝업 공지·익명 건의, 공용 자료실, 휴가·마일스톤·공휴일이 <b>자동 합성된 캘린더</b>와 부재 현황.</div></div>
+      <div class="kv"><div class="m">대시보드 상황판<em>DASHBOARD</em></div><div class="d"><b>“전사 현황을 한 화면에.”</b> 역할별 KPI + <b>처리 대기함</b>(승인할 일 모음) + 위젯으로, 대표는 회사 상태를 즉시 파악.</div></div>
+      <div class="kv"><div class="m">데이터 백업/복원<em>BACKUP</em></div><div class="d"><b>“중요 데이터 무손실 보장.”</b> 전 테이블 스냅샷을 <b>클라우드+로컬 이중 보관</b>, 매일 자동 백업, 안전한 merge 복원.</div></div>
+    </div>
+    <div class="foot">© 2026 주식회사 올댓스파인 · SWMS</div>
+  </section>
+
+  <!-- 8. 차별점 (숫자) -->
+  <section class="slide">
+    <div class="crumb"><b>Advantage</b> · 차별점</div><div class="pageno">8 / 10</div>
+    <div class="ttl"><span class="bar"></span>핵심 차별점</div>
+    <div class="body"><div class="grid3" style="height:auto">
+      <div class="card"><div class="big">2중<span class="u">인증</span></div><p style="margin-top:8px"><b>IP + QR 위치 인증</b>으로 원격 출근 우회를 막는 강력한 근태 통제.</p></div>
+      <div class="card"><div class="big">1<span class="u">화면</span></div><p style="margin-top:8px">로그인 즉시 <b>전사 현황 상황판</b> — 출근·보고·결재·프로젝트·예산을 한눈에.</p></div>
+      <div class="card"><div class="big">10<span class="u">모듈</span></div><p style="margin-top:8px">근태부터 예산·결재까지 <b>한 시스템</b>에서, 한 번 입력이 여러 곳에 반영.</p></div>
+      <div class="card"><div class="big">3중<span class="u">백업</span></div><p style="margin-top:8px">매일 자동 + 수동 + 로그인 시 로컬 — <b>데이터 무손실</b> 안전망.</p></div>
+      <div class="card"><div class="big">역할별</div><p style="margin-top:8px">직원·회계·대표가 <b>각자 필요한 화면</b>만. 예산·인사는 RLS로 차단.</p></div>
+      <div class="card"><div class="big">PC+모바일</div><p style="margin-top:8px">반응형 단일 시스템 — 사무실 PC, 외근 모바일 어디서든.</p></div>
+    </div></div>
+    <div class="foot">© 2026 주식회사 올댓스파인 · SWMS</div>
+  </section>
+
+  <!-- 9. 기술·보안 -->
+  <section class="slide">
+    <div class="crumb"><b>Tech</b> · 기술 · 보안</div><div class="pageno">9 / 10</div>
+    <div class="ttl"><span class="bar"></span>안정적인 기술 기반</div>
+    <div class="body"><div class="grid2">
+      <div class="card"><div class="h"><span class="dot"></span>기술 스택</div>
+        <p style="line-height:1.9">· <b>Next.js 16 · React 19 · TypeScript</b><br>· <b>Supabase</b> (PostgreSQL · Auth · Storage)<br>· <b>Vercel</b> 서버리스 배포 · 자동 백업 Cron<br>· Tailwind · Pretendard · Recharts</p></div>
+      <div class="card"><div class="h"><span class="dot"></span>보안</div>
+        <p style="line-height:1.9">· 전 테이블 <b>RLS(행 단위 보안)</b> — 예산·인사 데이터 격리<br>· 신뢰 로직(IP/QR·권한)은 <b>서버에서만</b> 판정<br>· 시간은 <b>서버 시각(KST)</b> 기준, 조작 방지<br>· service_role 키 서버 전용 · 데이터 백업 상시</p></div>
+    </div></div>
+    <div class="foot">© 2026 주식회사 올댓스파인 · SWMS</div>
+  </section>
+
+  <!-- 10. 마무리 -->
+  <section class="slide divider">
+    <div class="rule t"></div><div class="rule b"></div>
+    <div class="num">★</div>
+    <div class="en"><span class="bar"></span>Summary</div>
+    <h2>원격에서도, 한눈에.</h2>
+    <div class="sub" style="bottom:120px"><b style="color:#fff">올댓스파인 스마트 업무관리 시스템</b> — 근태·업무·목표·프로젝트·예산·결재를 하나로.<br>입력은 최소로, 보는 것은 충실하게. 대표가 원격에서도 회사를 통제합니다.</div>
+    <div class="foot dark">© 2026 주식회사 올댓스파인 (AllThatSpine Co., Ltd.) · SWMS v1.0</div>
+  </section>
+
+</div>
+<div class="hint">← → 또는 스크롤 · 인쇄(Ctrl+P)로 PDF 저장</div>
+<script>
+  // 좌우 화살표로 슬라이드 이동
+  const slides=[...document.querySelectorAll('.slide')];let i=0;
+  function go(n){i=Math.max(0,Math.min(slides.length-1,n));slides[i].scrollIntoView({behavior:'smooth',block:'center'});}
+  addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();go(i+1)}if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(i-1)}});
+  const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting)i=slides.indexOf(en.target)}),{threshold:.6});
+  slides.forEach(s=>io.observe(s));
+</script>
+</body>
+</html>
