@@ -161,6 +161,7 @@ export default async function AttendancePage({
       .select("id, name")
       .eq("status", "재직")
       .neq("role", "kiosk")
+      .neq("role", "admin")
       .order("name")
     const { data: todayAll } = await supabase
       .from("attendance")

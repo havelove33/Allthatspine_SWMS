@@ -64,6 +64,7 @@ export default async function ByEmployeePage({
     .select("id, name")
     .eq("status", "재직")
     .neq("role", "kiosk")
+    .neq("role", "admin")
     .order("name")
   const emps = (empsData ?? []) as { id: string; name: string }[]
 

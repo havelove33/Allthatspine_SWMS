@@ -49,6 +49,7 @@ export default async function DailyAttendancePage({
     .select("id, name, position")
     .eq("status", "재직")
     .neq("role", "kiosk")
+    .neq("role", "admin")
     .order("name")
   const { data: attData } = await supabase.from("attendance").select("*").eq("work_date", date)
   const { data: leaveData } = await supabase

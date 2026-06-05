@@ -23,7 +23,7 @@ export async function AdminBoard() {
 
   const [empsR, attR, leavesTodayR, reportsTodayR, projectsR, noticesR, milestonesR] =
     await Promise.all([
-      supabase.from("employees").select("id, name").neq("status", "퇴사").order("name"),
+      supabase.from("employees").select("id, name").neq("status", "퇴사").neq("role", "admin").neq("role", "kiosk").order("name"),
       supabase.from("attendance").select("employee_id, check_in_at, is_late").eq("work_date", today),
       supabase
         .from("leaves")
