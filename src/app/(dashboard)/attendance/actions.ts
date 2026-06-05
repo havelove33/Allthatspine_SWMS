@@ -32,7 +32,9 @@ async function validateLocation(): Promise<{ error?: string; ip: string | null }
   const h = await headers()
   const ip = getClientIp(h)
 
-  if (process.env.NODE_ENV === "production") {
+  // 허용 IP 대역이 비어 있으면 IP 검증을 사용하지 않음(어디서든 출퇴근 허용).
+  // 공인 IP 확정 후 관리자 설정에서 회사 IP 대역을 입력하면 검증이 다시 켜진다.
+  if (process.env.NODE_ENV === "production" && ranges.length > 0) {
     if (!ip || !isIpAllowed(ip, ranges)) {
       return { error: "회사 네트워크에서만 출퇴근이 가능합니다. (IP 불일치)", ip }
     }

@@ -51,6 +51,8 @@ export function SettingsForm({ settings }: { settings: CompanySettings }) {
         <h2 className="mb-1 font-semibold">허용 IP 대역</h2>
         <p className="mb-3 text-sm text-muted-foreground">
           출퇴근 체크가 가능한 회사 IP 범위입니다. 한 줄에 하나씩(CIDR), 예: <code>203.0.113.0/24</code>
+          <br />
+          <b>비워두면 IP 검증을 사용하지 않습니다</b> — 어디서든 출퇴근 가능(단, QR 인증은 계속 필요).
         </p>
         <Textarea
           name="allowed_ip_ranges"
@@ -60,8 +62,8 @@ export function SettingsForm({ settings }: { settings: CompanySettings }) {
           className="font-mono text-sm"
         />
         <p className="mt-2 text-xs text-amber-600">
-          ⚠️ 현재 값 <code>192.168.101.0/24</code>는 임시(사설 IP)입니다. 배포 후 실제
-          작동하려면 회사 인터넷의 <b>공인 IP 대역</b>으로 교체하세요. (로컬 개발 중에는 IP 검증이
+          ⚠️ 공인 IP 확정 전에는 <b>비워 두어 IP 검증을 꺼둘 수 있습니다.</b> 회사 인터넷의{" "}
+          <b>공인 IPv4 대역</b>을 입력하면 그 대역에서만 출퇴근이 허용됩니다. (로컬 개발 중에는 IP 검증이
           생략됩니다.)
         </p>
       </div>
