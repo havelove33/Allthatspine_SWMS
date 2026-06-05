@@ -13,6 +13,7 @@ import { visibleNavItems } from "./nav"
 import { Logo } from "@/components/brand/logo"
 import { NotificationBell } from "./notification-bell"
 import { signOut } from "@/app/(auth)/login/actions"
+import { ChangePasswordButton } from "./change-password-dialog"
 import type { Employee, Role } from "@/types"
 
 const ROLE_LABEL: Record<Role, string> = {
@@ -100,17 +101,20 @@ function UserSection({ employee }: { employee: Employee }) {
           {ROLE_LABEL[employee.role]}
         </p>
       </div>
-      <form action={signOut}>
-        <Button
-          type="submit"
-          variant="ghost"
-          size="icon"
-          title="로그아웃"
-          aria-label="로그아웃"
-        >
-          <LogOut className="size-4" />
-        </Button>
-      </form>
+      <div className="flex items-center gap-0.5">
+        <ChangePasswordButton />
+        <form action={signOut}>
+          <Button
+            type="submit"
+            variant="ghost"
+            size="icon"
+            title="로그아웃"
+            aria-label="로그아웃"
+          >
+            <LogOut className="size-4" />
+          </Button>
+        </form>
+      </div>
     </div>
   )
 }
