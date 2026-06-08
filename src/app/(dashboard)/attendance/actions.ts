@@ -86,7 +86,10 @@ export async function checkIn(
     return { ok: false, error: "이미 오늘 출근 처리되었습니다." }
   }
 
-  const { isLate, status } = judgeCheckIn(now, workStart, grace)
+  const judged = judgeCheckIn(now, workStart, grace)
+  // 탄력근무제: 지각 집계 제외 (출퇴근·근무시간은 그대로 기록)
+  const isLate = me.flexible_work ? false : judged.isLate
+  const status = me.flexible_work ? "정상" : judged.status
   const row = {
     employee_id: me.id,
     work_date: workDate,
@@ -142,10 +145,17 @@ export async function checkOut(): Promise<CheckState> {
   }
 
   const checkInAt = new Date(att.check_in_at)
-  const { isEarlyLeave } = judgeCheckOut(now, workEnd)
+  const judged = judgeCheckOut(now, workEnd)
+  // 탄력근무제: 조기퇴근 집계 제외 (근무시간은 그대로 집계)
+  const isEarlyLeave = me.flexible_work ? false : judged.isEarlyLeave
   const workMinutes = calcWorkMinutes(checkInAt, now)
-  const status =
-    att.status === "지각" ? "지각" : isEarlyLeave ? "조기퇴근" : att.status
+  const status = me.flexible_work
+    ? "정상"
+    : att.status === "지각"
+      ? "지각"
+      : isEarlyLeave
+        ? "조기퇴근"
+        : att.status
 
   const { error } = await admin
     .from("attendance")

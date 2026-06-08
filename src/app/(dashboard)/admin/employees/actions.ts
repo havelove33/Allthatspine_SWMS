@@ -44,6 +44,7 @@ const CreateSchema = z.object({
   hire_date: z.string().optional(),
   position: z.string().optional(),
   employment_type: z.string().optional(),
+  flexible_work: z.boolean().optional(),
   used_so_far: z.coerce.number().min(0).optional(),
 })
 
@@ -62,6 +63,7 @@ export async function createEmployee(
     hire_date: field(formData, "hire_date"),
     position: field(formData, "position"),
     employment_type: field(formData, "employment_type"),
+    flexible_work: formData.get("flexible_work") === "on",
     used_so_far: field(formData, "used_so_far"),
   })
   if (!parsed.success) {
@@ -93,6 +95,7 @@ export async function createEmployee(
     hire_date: d.hire_date ?? null,
     position: d.position ?? null,
     employment_type: d.employment_type ?? null,
+    flexible_work: d.flexible_work ?? false,
     must_change_password: true,
   })
   if (dbErr) {
@@ -140,6 +143,7 @@ const UpdateSchema = z.object({
   hire_date: z.string().optional(),
   position: z.string().optional(),
   employment_type: z.string().optional(),
+  flexible_work: z.boolean().optional(),
 })
 
 export async function updateEmployee(
@@ -158,6 +162,7 @@ export async function updateEmployee(
     hire_date: field(formData, "hire_date"),
     position: field(formData, "position"),
     employment_type: field(formData, "employment_type"),
+    flexible_work: formData.get("flexible_work") === "on",
   })
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "입력값을 확인하세요." }
@@ -181,6 +186,7 @@ export async function updateEmployee(
       hire_date: d.hire_date ?? null,
       position: d.position ?? null,
       employment_type: d.employment_type ?? null,
+      flexible_work: d.flexible_work ?? false,
       updated_at: new Date().toISOString(),
     })
     .eq("id", d.id)

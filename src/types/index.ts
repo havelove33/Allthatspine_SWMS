@@ -15,6 +15,7 @@ export interface Employee {
   status: EmployeeStatus
   position: string | null
   employment_type: string | null
+  flexible_work: boolean
   department_id: string | null
   role: Role
   annual_leave_total: number

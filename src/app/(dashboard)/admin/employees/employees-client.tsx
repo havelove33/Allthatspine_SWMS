@@ -190,6 +190,12 @@ export function CreateEmployeeButton() {
                   <Label htmlFor="c-used">올해 기사용 연차(일)</Label>
                   <Input id="c-used" name="used_so_far" type="number" min="0" step="0.5" defaultValue="0" />
                 </Row>
+                <div className="sm:col-span-2">
+                  <label className="flex items-center gap-2 text-sm">
+                    <input type="checkbox" name="flexible_work" className="size-4 accent-primary" />
+                    <span><span className="font-medium">탄력근무제</span> — 출퇴근은 기록하되 지각·조기퇴근 집계 제외</span>
+                  </label>
+                </div>
               </div>
               <p className="text-xs text-muted-foreground">
                 발생 연차는 입사일 기준으로 자동 계산됩니다. 시스템 도입 전 올해 이미 사용한 연차가
@@ -299,6 +305,12 @@ function EditEmployeeButton({ employee }: { employee: Employee }) {
                   ))}
                 </select>
               </Row>
+              <div className="sm:col-span-2">
+                <label className="flex items-center gap-2 text-sm">
+                  <input type="checkbox" name="flexible_work" defaultChecked={employee.flexible_work} className="size-4 accent-primary" />
+                  <span><span className="font-medium">탄력근무제</span> — 출퇴근은 기록하되 지각·조기퇴근 집계 제외</span>
+                </label>
+              </div>
             </div>
             <p className="text-xs text-muted-foreground">
               연차는 입사일 기준으로 자동 계산됩니다.
@@ -425,7 +437,12 @@ export function EmployeeTable({ employees }: { employees: Employee[] }) {
         <TableBody>
           {employees.map((e) => (
             <TableRow key={e.id}>
-              <TableCell className="font-medium">{e.name}</TableCell>
+              <TableCell className="font-medium">
+                {e.name}
+                {e.flexible_work && (
+                  <Badge variant="outline" className="ml-1.5 text-[10px] font-normal">탄력</Badge>
+                )}
+              </TableCell>
               <TableCell className="text-muted-foreground">{e.email}</TableCell>
               <TableCell>{ROLE_LABEL[e.role]}</TableCell>
               <TableCell>{e.position ?? "-"}</TableCell>
