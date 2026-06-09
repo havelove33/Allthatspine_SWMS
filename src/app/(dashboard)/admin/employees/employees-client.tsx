@@ -188,7 +188,7 @@ export function CreateEmployeeButton() {
                 </Row>
                 <Row>
                   <Label htmlFor="c-used">올해 기사용 연차(일)</Label>
-                  <Input id="c-used" name="used_so_far" type="number" min="0" step="0.5" defaultValue="0" />
+                  <Input id="c-used" name="used_so_far" type="number" min="0" step="0.25" defaultValue="0" />
                 </Row>
                 <div className="sm:col-span-2">
                   <label className="flex items-center gap-2 text-sm">

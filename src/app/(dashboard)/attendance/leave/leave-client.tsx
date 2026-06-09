@@ -19,8 +19,9 @@ export function LeaveRequestForm() {
   const [pending, setPending] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const half = !!leaveTypeDef(type)?.half
-  const effEnd = half ? start : end || start
+  const def = leaveTypeDef(type)
+  const single = !!(def?.half || def?.quarter) // 반차·반반차는 당일만
+  const effEnd = single ? start : end || start
   const days = start ? computeLeaveDays(type, start, effEnd) : 0
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -70,12 +71,12 @@ export function LeaveRequestForm() {
             id="ed"
             name="end_date"
             type="date"
-            value={half ? start : end}
+            value={single ? start : end}
             onChange={(e) => setEnd(e.target.value)}
-            disabled={half}
+            disabled={single}
             min={start || undefined}
           />
-          {half && <p className="text-xs text-muted-foreground">반차는 당일만 가능합니다.</p>}
+          {single && <p className="text-xs text-muted-foreground">반차·반반차는 당일만 가능합니다.</p>}
         </div>
       </div>
       <div className="grid gap-2">

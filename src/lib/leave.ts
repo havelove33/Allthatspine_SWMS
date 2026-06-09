@@ -5,12 +5,14 @@ export interface LeaveTypeDef {
   label: string
   consumes: boolean // 연차 차감 여부
   half: boolean // 반차(0.5일)
+  quarter?: boolean // 반반차(0.25일)
 }
 
 export const LEAVE_TYPES: LeaveTypeDef[] = [
   { value: "연차", label: "연차", consumes: true, half: false },
   { value: "오전반차", label: "오전 반차", consumes: true, half: true },
   { value: "오후반차", label: "오후 반차", consumes: true, half: true },
+  { value: "반반차", label: "반반차(0.25일)", consumes: true, half: false, quarter: true },
   { value: "병가", label: "병가", consumes: false, half: false },
   { value: "경조사", label: "경조사", consumes: false, half: false },
   { value: "공가", label: "공가", consumes: false, half: false },
@@ -37,6 +39,7 @@ export function countWeekdays(start: string, end: string): number {
 /** 휴가 종류·기간으로 사용일수 계산. */
 export function computeLeaveDays(type: string, start: string, end: string): number {
   const def = leaveTypeDef(type)
+  if (def?.quarter) return 0.25
   if (def?.half) return 0.5
   return countWeekdays(start, end)
 }

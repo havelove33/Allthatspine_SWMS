@@ -66,9 +66,11 @@ export type LeaveType =
   | "연차"
   | "오전반차"
   | "오후반차"
+  | "반반차"
   | "병가"
   | "경조사"
   | "공가"
+  | "무급"
   | "무급"
 
 export type ApprovalStatus = "대기" | "승인" | "반려"

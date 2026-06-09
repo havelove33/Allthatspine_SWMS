@@ -24,7 +24,7 @@ export async function requestLeave(
   const def = leaveTypeDef(type)
   if (!def) return { ok: false, error: "휴가 종류를 선택하세요." }
   if (!DATE_RE.test(start)) return { ok: false, error: "시작일을 선택하세요." }
-  if (def.half) end = start // 반차는 당일
+  if (def.half || def.quarter) end = start // 반차·반반차는 당일
   if (!DATE_RE.test(end)) end = start
   if (end < start) return { ok: false, error: "종료일이 시작일보다 빠릅니다." }
 

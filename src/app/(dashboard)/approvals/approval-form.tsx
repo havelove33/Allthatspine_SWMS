@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea"
 
 const FIELD =
   "h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
-const LEAVE_TYPES = ["연차", "오전반차", "오후반차", "병가", "경조사", "공가", "무급"]
+const LEAVE_TYPES = ["연차", "오전반차", "오후반차", "반반차", "병가", "경조사", "공가", "무급"]
 
 export function ApprovalForm({ today }: { today: string }) {
   const router = useRouter()
@@ -89,7 +89,7 @@ export function ApprovalForm({ today }: { today: string }) {
             </div>
             <div className="grid gap-1.5">
               <Label htmlFor="a-days">일수</Label>
-              <Input id="a-days" type="number" step="0.5" value={days} onChange={(e) => setDays(e.target.value)} />
+              <Input id="a-days" type="number" step="0.25" value={days} onChange={(e) => setDays(e.target.value)} />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
