@@ -93,3 +93,12 @@ export function weekdaysBetween(start: string, end: string): string[] {
   }
   return out
 }
+
+/** 부여(현재) 연차 — 관리자가 입력한 annual_leave_total이 있으면 그 값, 0이면 입사일 기준 자동 계산. */
+export function grantedLeave(
+  emp: { hire_date: string | null; annual_leave_total?: number | null },
+  asOf: string
+): number {
+  const manual = Number(emp.annual_leave_total) || 0
+  return manual > 0 ? manual : computeAnnualEntitlement(emp.hire_date, asOf)
+}

@@ -2,11 +2,7 @@ import { getCurrentEmployee, isAdmin } from "@/lib/auth"
 import { createClient } from "@/lib/supabase/server"
 import { PageHeader } from "@/components/dashboard/page-header"
 import { AttendanceTabs } from "@/components/dashboard/attendance-tabs"
-import {
-  computeAnnualEntitlement,
-  currentLeaveYearStart,
-  leaveTypeDef,
-} from "@/lib/leave"
+import { grantedLeave } from "@/lib/leave"
 import { getKstDateString } from "@/lib/attendance"
 import { LeaveRequestForm, LeaveApproveButtons } from "./leave-client"
 import { Badge } from "@/components/ui/badge"
@@ -36,18 +32,12 @@ export default async function LeavePage() {
     .order("created_at", { ascending: false })
   const myLeaves = myLeavesData ?? []
 
-  // 발생 연차(입사일 기준 법정) · 사용(현재 연차연도 승인분) · 잔여
+  // 발생(부여) · 사용 · 잔여 — 관리자 수동값(annual_leave_total / annual_leave_used) 기준.
+  // 부여는 0이면 입사일 자동 계산, 사용은 휴가 승인 시 자동 가산되며 관리자가 직접 수정 가능.
   const today = getKstDateString(new Date())
-  const entitlement = computeAnnualEntitlement(me.hire_date, today)
-  const yearStart = currentLeaveYearStart(me.hire_date, today)
-  const usedThisYear = (myLeaves as { status: string; leave_type: string; days: number; start_date: string }[])
-    .filter(
-      (l) =>
-        l.status === "승인" &&
-        leaveTypeDef(l.leave_type)?.consumes &&
-        (!yearStart || l.start_date >= yearStart)
-    )
-    .reduce((s, l) => s + Number(l.days), 0)
+  const manualTotal = Number(me.annual_leave_total) || 0
+  const entitlement = grantedLeave(me, today)
+  const usedThisYear = Number(me.annual_leave_used) || 0
   const remaining = entitlement - usedThisYear
 
   let pending: Record<string, unknown>[] = []
@@ -85,8 +75,7 @@ export default async function LeavePage() {
         </div>
       </div>
       <p className="mb-5 mt-2 text-xs text-muted-foreground">
-        입사일 기준 자동 계산(근로기준법)
-        {yearStart ? ` · 올해 연차연도 ${yearStart} 시작` : ""}
+        {manualTotal > 0 ? "관리자 설정 기준" : "입사일 기준 자동 계산(근로기준법)"} · 승인된 휴가는 사용 연차에 자동 반영됩니다
       </p>
 
       {/* 관리자: 승인 대기 */}

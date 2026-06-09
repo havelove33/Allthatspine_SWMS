@@ -24,7 +24,7 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table"
-import { computeAnnualEntitlement } from "@/lib/leave"
+import { grantedLeave } from "@/lib/leave"
 import { getKstDateString } from "@/lib/attendance"
 import type { Employee, Role } from "@/types"
 
@@ -187,8 +187,12 @@ export function CreateEmployeeButton() {
                   </select>
                 </Row>
                 <Row>
-                  <Label htmlFor="c-used">올해 기사용 연차(일)</Label>
-                  <Input id="c-used" name="used_so_far" type="number" min="0" step="0.25" defaultValue="0" />
+                  <Label htmlFor="c-total">현재 연차(부여, 일)</Label>
+                  <Input id="c-total" name="annual_leave_total" type="number" min="0" step="0.25" defaultValue="0" placeholder="0 = 입사일 기준 자동" />
+                </Row>
+                <Row>
+                  <Label htmlFor="c-used">기사용 연차(일)</Label>
+                  <Input id="c-used" name="annual_leave_used" type="number" min="0" step="0.25" defaultValue="0" />
                 </Row>
                 <div className="sm:col-span-2">
                   <label className="flex items-center gap-2 text-sm">
@@ -198,8 +202,8 @@ export function CreateEmployeeButton() {
                 </div>
               </div>
               <p className="text-xs text-muted-foreground">
-                발생 연차는 입사일 기준으로 자동 계산됩니다. 시스템 도입 전 올해 이미 사용한 연차가
-                있으면 “올해 기사용 연차”에 입력하세요.
+                “현재 연차”를 0으로 두면 입사일 기준으로 자동 계산됩니다. 이미 사용한 연차가 있으면
+                “기사용 연차”에 입력하세요. (승인된 휴가 신청은 자동으로 가산됩니다.)
               </p>
 
               {error && <p className="text-sm text-destructive">{error}</p>}
@@ -305,6 +309,14 @@ function EditEmployeeButton({ employee }: { employee: Employee }) {
                   ))}
                 </select>
               </Row>
+              <Row>
+                <Label htmlFor={`e-total-${employee.id}`}>현재 연차(부여, 일)</Label>
+                <Input id={`e-total-${employee.id}`} name="annual_leave_total" type="number" min="0" step="0.25" defaultValue={String(employee.annual_leave_total ?? 0)} />
+              </Row>
+              <Row>
+                <Label htmlFor={`e-used-${employee.id}`}>기사용 연차(일)</Label>
+                <Input id={`e-used-${employee.id}`} name="annual_leave_used" type="number" min="0" step="0.25" defaultValue={String(employee.annual_leave_used ?? 0)} />
+              </Row>
               <div className="sm:col-span-2">
                 <label className="flex items-center gap-2 text-sm">
                   <input type="checkbox" name="flexible_work" defaultChecked={employee.flexible_work} className="size-4 accent-primary" />
@@ -313,7 +325,7 @@ function EditEmployeeButton({ employee }: { employee: Employee }) {
               </div>
             </div>
             <p className="text-xs text-muted-foreground">
-              연차는 입사일 기준으로 자동 계산됩니다.
+              “현재 연차”가 0이면 입사일 기준 자동 계산. 승인된 휴가는 “기사용 연차”에 자동 가산됩니다.
             </p>
 
             {error && <p className="text-sm text-destructive">{error}</p>}
@@ -429,7 +441,7 @@ export function EmployeeTable({ employees }: { employees: Employee[] }) {
             <TableHead>역할</TableHead>
             <TableHead>직급</TableHead>
             <TableHead>입사일</TableHead>
-            <TableHead className="text-center">발생 연차</TableHead>
+            <TableHead className="text-center">연차(부여/사용)</TableHead>
             <TableHead className="text-center">상태</TableHead>
             <TableHead className="text-right">관리</TableHead>
           </TableRow>
@@ -448,7 +460,10 @@ export function EmployeeTable({ employees }: { employees: Employee[] }) {
               <TableCell>{e.position ?? "-"}</TableCell>
               <TableCell>{e.hire_date ?? "-"}</TableCell>
               <TableCell className="text-center">
-                {e.hire_date ? `${computeAnnualEntitlement(e.hire_date, today)}일` : "-"}
+                {grantedLeave(e, today)}일
+                {Number(e.annual_leave_used) > 0 && (
+                  <span className="text-muted-foreground"> · 사용 {e.annual_leave_used}</span>
+                )}
               </TableCell>
               <TableCell className="text-center">
                 <Badge variant={STATUS_VARIANT[e.status] ?? "secondary"}>

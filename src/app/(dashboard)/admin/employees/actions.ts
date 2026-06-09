@@ -5,8 +5,6 @@ import { randomBytes } from "node:crypto"
 import { revalidatePath } from "next/cache"
 import { createAdminClient } from "@/lib/supabase/server"
 import { getCurrentEmployee } from "@/lib/auth"
-import { currentLeaveYearStart } from "@/lib/leave"
-import { getKstDateString } from "@/lib/attendance"
 
 // ── 공통 ─────────────────────────────────────────────
 async function assertAdmin() {
@@ -45,14 +43,15 @@ const CreateSchema = z.object({
   position: z.string().optional(),
   employment_type: z.string().optional(),
   flexible_work: z.boolean().optional(),
-  used_so_far: z.coerce.number().min(0).optional(),
+  annual_leave_total: z.coerce.number().min(0).optional(),
+  annual_leave_used: z.coerce.number().min(0).optional(),
 })
 
 export async function createEmployee(
   _prev: CreateState,
   formData: FormData
 ): Promise<CreateState> {
-  const me = await assertAdmin()
+  await assertAdmin()
 
   const parsed = CreateSchema.safeParse({
     name: field(formData, "name"),
@@ -64,7 +63,8 @@ export async function createEmployee(
     position: field(formData, "position"),
     employment_type: field(formData, "employment_type"),
     flexible_work: formData.get("flexible_work") === "on",
-    used_so_far: field(formData, "used_so_far"),
+    annual_leave_total: field(formData, "annual_leave_total"),
+    annual_leave_used: field(formData, "annual_leave_used"),
   })
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "입력값을 확인하세요." }
@@ -96,31 +96,14 @@ export async function createEmployee(
     position: d.position ?? null,
     employment_type: d.employment_type ?? null,
     flexible_work: d.flexible_work ?? false,
+    annual_leave_total: d.annual_leave_total ?? 0,
+    annual_leave_used: d.annual_leave_used ?? 0,
     must_change_password: true,
   })
   if (dbErr) {
     // 롤백: 방금 만든 auth 계정 삭제
     await admin.auth.admin.deleteUser(created.user.id)
     return { ok: false, error: `직원 정보 저장 실패: ${dbErr.message}` }
-  }
-
-  // 3) 시스템 도입 전 기사용 연차 → 현재 연차연도에 귀속된 '기사용' 휴가 1건 생성
-  //    (사용 집계에 자동 반영되고, 다음 연차연도에는 자동으로 제외됨)
-  const usedSoFar = d.used_so_far ?? 0
-  if (usedSoFar > 0 && d.hire_date) {
-    const yearStart = currentLeaveYearStart(d.hire_date, getKstDateString(new Date()))
-    if (yearStart) {
-      await admin.from("leaves").insert({
-        employee_id: created.user.id,
-        leave_type: "연차",
-        start_date: yearStart,
-        end_date: yearStart,
-        days: usedSoFar,
-        reason: "시스템 도입 전 기사용 연차",
-        status: "승인",
-        approved_by: me.id,
-      })
-    }
   }
 
   revalidatePath("/admin/employees")
@@ -144,6 +127,8 @@ const UpdateSchema = z.object({
   position: z.string().optional(),
   employment_type: z.string().optional(),
   flexible_work: z.boolean().optional(),
+  annual_leave_total: z.coerce.number().min(0).optional(),
+  annual_leave_used: z.coerce.number().min(0).optional(),
 })
 
 export async function updateEmployee(
@@ -163,6 +148,8 @@ export async function updateEmployee(
     position: field(formData, "position"),
     employment_type: field(formData, "employment_type"),
     flexible_work: formData.get("flexible_work") === "on",
+    annual_leave_total: field(formData, "annual_leave_total"),
+    annual_leave_used: field(formData, "annual_leave_used"),
   })
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "입력값을 확인하세요." }
@@ -187,6 +174,8 @@ export async function updateEmployee(
       position: d.position ?? null,
       employment_type: d.employment_type ?? null,
       flexible_work: d.flexible_work ?? false,
+      annual_leave_total: d.annual_leave_total ?? 0,
+      annual_leave_used: d.annual_leave_used ?? 0,
       updated_at: new Date().toISOString(),
     })
     .eq("id", d.id)

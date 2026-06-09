@@ -72,6 +72,17 @@ export async function approveLeave(leaveId: string): Promise<LeaveState> {
     .eq("id", leaveId)
   if (error) return { ok: false, error: `승인 실패: ${error.message}` }
 
+  // 소비성 휴가(연차/반차/반반차)면 사용 연차에 자동 가산
+  if (leaveTypeDef(leave.leave_type)?.consumes) {
+    const { data: emp } = await admin
+      .from("employees")
+      .select("annual_leave_used")
+      .eq("id", leave.employee_id)
+      .single()
+    const used = (Number(emp?.annual_leave_used) || 0) + Number(leave.days)
+    await admin.from("employees").update({ annual_leave_used: used }).eq("id", leave.employee_id)
+  }
+
   await notify([leave.employee_id], {
     type: "휴가승인",
     title: "휴가가 승인되었습니다",

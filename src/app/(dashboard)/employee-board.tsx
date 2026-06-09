@@ -11,6 +11,7 @@ import {
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/server"
 import { getKstDateString, getKstYearMonth, formatKstTime } from "@/lib/attendance"
+import { grantedLeave } from "@/lib/leave"
 import { StatCard, WidgetCard, EmptyRow } from "@/components/dashboard/widgets"
 import { cn } from "@/lib/utils"
 import type { Employee } from "@/types"
@@ -92,7 +93,7 @@ export async function EmployeeBoard({ me }: { me: Employee }) {
   const rejected = approvals.filter((a) => a.status === "반려")
   const pendingAp = approvals.filter((a) => a.status === "대기")
   const lateMonth = ((myAttMonthR.data ?? []) as { is_late: boolean }[]).filter((r) => r.is_late).length
-  const leaveRemain = (Number(me.annual_leave_total) || 0) - (Number(me.annual_leave_used) || 0)
+  const leaveRemain = grantedLeave(me, today) - (Number(me.annual_leave_used) || 0)
   const myLeaves = (myLeavesR.data ?? []) as {
     leave_type: string
     start_date: string
